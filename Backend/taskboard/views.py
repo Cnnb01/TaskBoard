@@ -43,10 +43,13 @@ def tasks_list(request):
         tasks = Task.objects.all()
         status_filter = request.query_params.get('status')
         priority = request.query_params.get('priority')
+        project_id = request.query_params.get('project_id')
         if status_filter:
             tasks = tasks.filter(status_filter=status_filter)
         if priority:
             tasks = tasks.filter(priority=priority)
+        if project_id:
+            tasks = tasks.filter(project_id=project_id)
         serializer = TaskSerializer(tasks, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'POST':
