@@ -1,10 +1,21 @@
 import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Dashboard from './pages/dashboard'
+import ProjectTasks from './pages/projectTasks'
 
 function App() {
   return (
     <>
       <section id="center">
         HELLLO
+        <h1>WELCOME TO TASKBOARD</h1>
+        <h2>TRACK YOUR TASKS</h2>
+        <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Dashboard/>}/>
+          <Route path="/projects/:id/tasks" element={<ProjectTasks/>}/>
+        </Routes>
+        </BrowserRouter>
       </section>
     </>
   )
