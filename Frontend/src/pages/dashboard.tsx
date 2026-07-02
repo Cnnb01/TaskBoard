@@ -24,7 +24,7 @@ const Dashboard = () => {
 
     return (
         <div className="dashboard">
-            
+            <button onClick={()=> navigate("/create-project")}>Create Project</button>
             <h2>{projects.map((project:any)=>(
                 <div key={project.id} style={{border:'2px solid'}}>
                     <h3>{project.name}</h3>
