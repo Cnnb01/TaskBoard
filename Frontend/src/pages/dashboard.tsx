@@ -30,7 +30,8 @@ const Dashboard = () => {
                     <h3>{project.name}</h3>
                     <h4>{project.description}</h4>
                     <h5>{project.created_at}</h5>
-                    <button onClick={()=> navigate(`/projects/${project.id}/tasks`)}>View Project</button>
+                    <button onClick={()=> navigate(`/projects/${project.id}/tasks`)}>View Project</button><br/>
+                    <button onClick={()=>navigate(`/projects/${project.id}/edit-project`)} >Edit Project</button>
                 </div>
             ))}
             </h2>
