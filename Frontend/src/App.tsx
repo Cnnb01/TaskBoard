@@ -4,7 +4,6 @@ import Dashboard from './pages/dashboard'
 import ProjectTasks from './pages/projectTasks'
 import CreateProject from './pages/createProject'
 import CreateTask from './pages/createTask'
-import EditProject from './pages/editProject'
 
 function App() {
   return (
@@ -19,8 +18,6 @@ function App() {
           <Route path="/projects/:id/tasks" element={<ProjectTasks/>}/>
           <Route path="/create-project" element={<CreateProject/>}/>
           <Route path="/projects/:id/create-task" element={<CreateTask/>}/>
-          <Route path="/projects/:id/edit-project" element={<EditProject/>}/>
-          {/* <Route path="*" element={<h1>NOT FOUND</h1>}/> */}
         </Routes>
         </BrowserRouter>
       </section>
