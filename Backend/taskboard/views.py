@@ -22,8 +22,9 @@ def project_list(request):
 @api_view(['GET','PUT','PATCH','DELETE'])  
 def project_details(request, pk):
     if request.method == 'GET':
-        tasks = Task.objects.filter(project_id=pk)
-        serializer = TaskSerializer(tasks, many=True)
+        project = Project.objects.get(pk=pk)
+        serializer = ProjectSeriliazer(project)
+        print("the project returned is=>",serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'PUT' or request.method == 'PATCH':
         project = Project.objects.get(pk=pk)
@@ -45,7 +46,7 @@ def tasks_list(request):
         priority = request.query_params.get('priority')
         project_id = request.query_params.get('project_id')
         if status_filter:
-            tasks = tasks.filter(status_filter=status_filter)
+            tasks = tasks.filter(status=status_filter)
         if priority:
             tasks = tasks.filter(priority=priority)
         if project_id:
