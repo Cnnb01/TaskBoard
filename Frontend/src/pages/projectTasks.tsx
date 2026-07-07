@@ -30,6 +30,7 @@ const ProjectTasks = () => {
                     <p>{task.description}</p>
                     <p>{task.status}</p>
                     <p>{task.priority}</p>
+                    <button onClick={()=>navigate(`/projects/${id}/tasks/${task.id}/edit-task`)}>Edit Task</button>
                 </div>
             ))}
         </div>
