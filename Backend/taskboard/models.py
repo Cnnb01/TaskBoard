@@ -18,7 +18,7 @@ class Task(models.Model):
         LOW = 'low'
         MEDIUM = 'medium'
         HIGH = 'high'
-    project_id = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='task')
+    project_id = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
     title = models.CharField(max_length=200)
     description = models.TextField()
     due_date = models.DateTimeField()
