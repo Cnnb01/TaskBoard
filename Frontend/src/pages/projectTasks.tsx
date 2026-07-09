@@ -20,6 +20,14 @@ const ProjectTasks = () => {
         fetchTasks(id)
     }, [id])
 
+    const deleteTask = (id: number) => async () => {
+        try {
+            await api.delete(`/tasks/${id}/`)
+            setTasks(tasks.filter((t:any)=>t.id !== id))
+        } catch (error) {
+            console.error(error)
+        }
+    }
     return (
         <div>
             <button onClick={()=>navigate(`/projects/${id}/create-task`)}>Create New Task</button>
@@ -31,6 +39,7 @@ const ProjectTasks = () => {
                     <p>{task.status}</p>
                     <p>{task.priority}</p>
                     <button onClick={()=>navigate(`/projects/${id}/tasks/${task.id}/edit-task`)}>Edit Task</button>
+                    <button onClick={deleteTask(task.id)}>Delete Task</button>
                 </div>
             ))}
         </div>
