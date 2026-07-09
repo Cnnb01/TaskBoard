@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/client";
 import { useNavigate } from "react-router-dom";
+import type { Task } from "../types";
 const ProjectTasks = () => {
     const navigate = useNavigate()
     const { id } = useParams()
-    const [tasks, setTasks] = useState([])
+    const [tasks, setTasks] = useState<Task[]>([])
 
     const fetchTasks = async(id: string | undefined) => {
         try {
