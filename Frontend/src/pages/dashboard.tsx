@@ -21,6 +21,15 @@ const Dashboard = () => {
     useEffect(()=>{
         fetchprojects()
     },[])
+    const deleteProject = async(id:number) => {
+        try {
+            const res = await api.delete(`/projects/${id}/`)
+            setProjects(projects.filter((p:any)=>p.id !== id))
+        } catch (error) {
+            console.error(error)
+        }
+    }
+    
 
     return (
         <div className="dashboard">
@@ -32,6 +41,7 @@ const Dashboard = () => {
                     <h5>{project.created_at}</h5>
                     <button onClick={()=> navigate(`/projects/${project.id}/tasks`)}>View Project</button><br/>
                     <button onClick={()=>navigate(`/projects/${project.id}/edit-project`)} >Edit Project</button>
+                    <button onClick={()=>deleteProject(project.id)}>Delete Project</button>
                 </div>
             ))}
             </h2>
