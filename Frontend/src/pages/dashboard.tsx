@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/client";
+import type { Project } from "../types";
 
 const Dashboard = () => {
     const navigate = useNavigate()
-    const [projects, setProjects] = useState([])
+    const [projects, setProjects] = useState<Project[]>([])
 
     const fetchprojects = async() => {
         try {
             const res = await api.get(`/projects/`)
-            // const data = await res.json()
             console.log("DATA RETRIEVED IS=>",res.data)
             setProjects(res.data)
         } catch (error) {
@@ -34,7 +34,7 @@ const Dashboard = () => {
     return (
         <div className="dashboard">
             <button onClick={()=> navigate("/create-project")}>Create Project</button>
-            <h2>{projects.map((project:any)=>(
+            <div>{projects.map((project:any)=>(
                 <div key={project.id} style={{border:'2px solid'}}>
                     <h3>{project.name}</h3>
                     <h4>{project.description}</h4>
@@ -44,7 +44,7 @@ const Dashboard = () => {
                     <button onClick={()=>deleteProject(project.id)}>Delete Project</button>
                 </div>
             ))}
-            </h2>
+            </div>
             
         </div>
     )
