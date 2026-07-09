@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import api from "../api/client";
-import { useNavigate } from "react-router-dom";
-import { AxiosError } from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
+import type { Props } from "../types";
 
-const TaskForm = () =>{
-    const { id } = useParams()
+
+const TaskForm = ({mode}: Props) =>{
+    const { id, taskId } = useParams()
     const navigate = useNavigate()
     const [formData, setFormData] = useState({
         title:'',
@@ -14,6 +14,19 @@ const TaskForm = () =>{
         priority:'',
         due_date: ''
     })
+
+    useEffect(()=> {
+        if (mode === 'edit'){
+            api.get(`/tasks/${taskId}/`)
+                .then(res=>setFormData({
+                title:res.data.title,
+                description:res.data.description,
+                status:res.data.status,
+                priority:res.data.priority,
+                due_date:res.data.due_date}))
+                .catch(err=>console.error(err))
+                }
+    },[id])
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>)=>{
         setFormData({
             ...formData,
@@ -23,13 +36,21 @@ const TaskForm = () =>{
     const handleSubmit = async(e: React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault()
         try {
-            const res = await api.post(`/tasks/`, { ...formData, project_id: id })
-            console.log("DATA SENT IS =>", res)
+            if(mode === 'create'){
+                await api.post(`/tasks/`, { ...formData, project_id: taskId })
+            }else{
+                await api.put(`/tasks/${taskId}/`, formData)
+            }
+            setFormData({
+                title:'',
+                description:'',
+                status:'',
+                priority:'',
+                due_date:''
+            })
             navigate(`/projects/${id}/tasks`)
         } catch (error) {
-            const err = error as AxiosError
-            console.error("ERROR IS =>", err.response?.data)
-
+            console.error("ERROR IS =>", error)
         }
         setFormData({
             title:'',
@@ -41,9 +62,10 @@ const TaskForm = () =>{
     }
     return(
         <div>
+            <h1>{mode === 'create' ? 'Create Task' : 'Edit Task'}</h1>
             <form onSubmit={handleSubmit}>
-              <input type="text" name="title" placeholder="Title" onChange={handleChange}/>  
-              <textarea name="description"  placeholder="Description" onChange={handleChange}></textarea>
+              <input type="text" name="title" placeholder="Title" value={formData.title} onChange={handleChange}/>  
+              <textarea name="description"  placeholder="Description" value={formData.description} onChange={handleChange}></textarea>
               <select name="status" value={formData.status} onChange={handleChange}>
                   <option value="todo">Todo</option>
                   <option value="in_progress">In progress</option>
@@ -54,9 +76,8 @@ const TaskForm = () =>{
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
               </select>
-              <input type="datetime-local" name="due_date" onChange={handleChange}/>
-
-              <button type="submit">Create Task</button>
+              <input type="datetime-local" name="due_date" value={formData.due_date} onChange={handleChange}/>
+              <button type="submit">{mode === 'create'?'Submit':'Edit'}</button>
             </form>
         </div>
     )
