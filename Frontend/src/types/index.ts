@@ -4,7 +4,8 @@ export interface Project {
     id: number,
     name: string,
     description: string,
-    created_at: string
+    created_at: string,
+    tasks:Task
 }
  
 export interface Task {
