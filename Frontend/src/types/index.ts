@@ -5,7 +5,7 @@ export interface Project {
     name: string,
     description: string,
     created_at: string,
-    tasks:Task
+    tasks:Task[]
 }
  
 export interface Task {
@@ -17,4 +17,8 @@ export interface Task {
     status: Status,
     priority:Priority, 
     project_id: number
+}
+
+export type Props = {
+    mode: 'create' | 'edit'
 }
