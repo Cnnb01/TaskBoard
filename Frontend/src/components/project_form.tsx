@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import api from "../api/client";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Props } from "../types";
-
+import { AxiosError } from "axios";
 
 const ProjectForm = ({ mode }: Props) => {
     const { id } = useParams()
+    const [isLoading, setisLoading] = useState(false)
+    const [errors, setErrors] = useState<string | null>(null)
     const [formData, setFormData] = useState({
         name:'',
         description:''
@@ -13,10 +15,14 @@ const ProjectForm = ({ mode }: Props) => {
     const navigate = useNavigate()
 
     useEffect(() => {
+        setisLoading(true)
+        setErrors(null)
         if (mode === 'edit') {
             api.get(`/projects/${id}/`)
                 .then(res => setFormData({ name: res.data.name, description: res.data.description }))
-                .catch(err => console.error(err))
+                // .catch(err => console.error(err))
+                .catch(err => setErrors(`An error of ${err.message} occurred. Please try again.`))
+                .finally(()=>setisLoading(false))
         }
     }, [id])
     
@@ -28,6 +34,8 @@ const ProjectForm = ({ mode }: Props) => {
     }
     const handleSubmit = async (e:React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault()
+        setisLoading(true)
+        setErrors(null)
         try {
             if (mode === 'create') {
                 await api.post(`/projects/`, formData)
@@ -37,7 +45,11 @@ const ProjectForm = ({ mode }: Props) => {
             setFormData({ name:'', description:'' })
             navigate("/")
         } catch (error) {
-            console.error("ERROR=>",error)
+            const err = error as AxiosError
+            // console.error("ERROR=>",error)
+            setErrors(`An error of ${err.message} occurred. Please try again.`)
+        } finally {
+            setisLoading(false)
         }
     }
     

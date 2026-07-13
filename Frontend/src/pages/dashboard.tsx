@@ -2,18 +2,27 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/client";
 import type { Project } from "../types";
+import { AxiosError } from "axios";
 
 const Dashboard = () => {
     const navigate = useNavigate()
+    const [isLoading, setIsLoading] = useState(false)
+    const [errors, setErrors] = useState<string | null>(null)
     const [projects, setProjects] = useState<Project[]>([])
 
     const fetchprojects = async() => {
+        setIsLoading(true)
+        setErrors(null)
         try {
             const res = await api.get(`/projects/`)
             console.log("DATA RETRIEVED IS=>",res.data)
             setProjects(res.data)
         } catch (error) {
-            console.error("ERROR IS=>", error)
+            const err = error as AxiosError
+            setErrors(`An error of ${err.message} occurred. Please try again.`)
+            // console.error("ERROR IS=>", error)
+        } finally {
+            setIsLoading(false)
         }
         
     }
@@ -23,10 +32,12 @@ const Dashboard = () => {
     },[])
     const deleteProject = async(id:number) => {
         try {
-            const res = await api.delete(`/projects/${id}/`)
-            setProjects(projects.filter((p:any)=>p.id !== id))
+            await api.delete(`/projects/${id}/`)
+            setProjects(projects.filter((p:Project)=>p.id !== id))
         } catch (error) {
-            console.error(error)
+            const err = error as AxiosError
+            setErrors(`An error of ${err.message} occurred. Please try again.`)
+            // console.error(error)
         }
     }
     
@@ -34,7 +45,7 @@ const Dashboard = () => {
     return (
         <div className="dashboard">
             <button onClick={()=> navigate("/create-project")}>Create Project</button>
-            <div>{projects.map((project:any)=>(
+            <div>{projects.map((project:Project)=>(
                 <div key={project.id} style={{border:'2px solid'}}>
                     <h3>{project.name}</h3>
                     <h4>{project.description}</h4>

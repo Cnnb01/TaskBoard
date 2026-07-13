@@ -2,11 +2,14 @@ import { useState,useEffect } from "react";
 import api from "../api/client";
 import { useNavigate,useParams } from "react-router-dom";
 import type { Props } from "../types";
+import { AxiosError } from "axios";
 
 
 const TaskForm = ({mode}: Props) =>{
     const { id, taskId } = useParams()
     const navigate = useNavigate()
+    const [isLoading, setisLoading] = useState(false)
+    const [errors, setErrors] = useState<null|string>(null)
     const [formData, setFormData] = useState({
         title:'',
         description:'',
@@ -16,6 +19,8 @@ const TaskForm = ({mode}: Props) =>{
     })
 
     useEffect(()=> {
+        setisLoading(true)
+        setErrors(null)
         if (mode === 'edit'){
             api.get(`/tasks/${taskId}/`)
                 .then(res=>setFormData({
@@ -24,9 +29,11 @@ const TaskForm = ({mode}: Props) =>{
                 status:res.data.status,
                 priority:res.data.priority,
                 due_date:res.data.due_date}))
-                .catch(err=>console.error(err))
+                // .catch(err=>console.error(err))
+                .catch(err=>setErrors(`An error of ${err.message} occurred. Please try again.`))
+                .finally(()=>setisLoading(false))
                 }
-    },[id])
+    },[taskId])
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>)=>{
         setFormData({
             ...formData,
@@ -35,9 +42,11 @@ const TaskForm = ({mode}: Props) =>{
     }
     const handleSubmit = async(e: React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault()
+        setisLoading(true)
+        setErrors(null)
         try {
             if(mode === 'create'){
-                await api.post(`/tasks/`, { ...formData, project_id: taskId })
+                await api.post(`/tasks/`, { ...formData, project: id })
             }else{
                 await api.put(`/tasks/${taskId}/`, formData)
             }
@@ -50,7 +59,11 @@ const TaskForm = ({mode}: Props) =>{
             })
             navigate(`/projects/${id}/tasks`)
         } catch (error) {
-            console.error("ERROR IS =>", error)
+            const err = error as AxiosError
+            // console.error("ERROR IS =>", error)
+            setErrors(`An error of ${err.message} occurred. Please try again.`)
+        } finally{
+            setisLoading(false)
         }
         setFormData({
             title:'',
