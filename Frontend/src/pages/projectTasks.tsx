@@ -41,6 +41,10 @@ const ProjectTasks = () => {
             // console.error(error)
         }
     }
+
+    if (isLoading) return <h1>Loading...</h1>
+    if (errors) return <h1>{errors}</h1>
+    
     return (
         <div>
             <button onClick={()=>navigate(`/projects/${id}/create-task`)}>Create New Task</button>

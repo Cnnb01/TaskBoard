@@ -73,6 +73,10 @@ const TaskForm = ({mode}: Props) =>{
             due_date: ''
         })
     }
+    
+    if (isLoading) return <h1>Loading...</h1>
+    if (errors) return <h1>{errors}</h1>
+
     return(
         <div>
             <h1>{mode === 'create' ? 'Create Task' : 'Edit Task'}</h1>
