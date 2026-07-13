@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class Project(models.Model):
     name = models.CharField(max_length=200)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -18,9 +18,9 @@ class Task(models.Model):
         LOW = 'low'
         MEDIUM = 'medium'
         HIGH = 'high'
-    project_id = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
     title = models.CharField(max_length=200)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     due_date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=Status.choices)
