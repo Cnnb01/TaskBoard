@@ -11,25 +11,25 @@ const ProjectTasks = () => {
     const [tasks, setTasks] = useState<Task[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [errors, setErrors] = useState<string | null>(null)
+    const [status, setStatus] = useState<string>('all')
 
     const fetchTasks = async(id: string | undefined) => {
         setIsLoading(true)
         setErrors(null)
         try {
-            const res = await api.get(`/tasks/?project=${id}`)
+            const res = await api.get(status === "all" ? `/tasks/?project=${id}` : `/tasks/?project=${id}&status=${status}`)
             console.log("THE TASKS ARE =>", res.data)
             setTasks(res.data)
         } catch (error) {
             const err = error as AxiosError
             setErrors(`An error of ${err.message} occurred. Please try again.`)
-            // console.error("ERROR IS=>", error)
         } finally {
             setIsLoading(false)
         }
     }
     useEffect(() => {
         fetchTasks(id)
-    }, [id])
+    }, [id,status])
 
     const deleteTask = (id: number) => async () => {
         try {
@@ -38,16 +38,20 @@ const ProjectTasks = () => {
         } catch (error) {
             const err = error as AxiosError
             setErrors(`An error of ${err.message} occurred. Please try again.`)
-            // console.error(error)
         }
     }
 
     if (isLoading) return <h1>Loading...</h1>
     if (errors) return <h1>{errors}</h1>
-    
+
     return (
         <div>
             <button onClick={()=>navigate(`/projects/${id}/create-task`)}>Create New Task</button>
+            <h6>Based on status</h6>
+            <button onClick={()=>setStatus("all")} >All</button>
+            <button onClick={()=>setStatus("todo")}>Todo</button>
+            <button onClick={()=>setStatus("in_progress")}>In Progress</button>
+            <button onClick={()=>setStatus("done")}>Done</button>
             <h1>Tasks</h1>
             {tasks.map((task: Task) => (
                 <div key={task.id}>
