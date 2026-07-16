@@ -19,9 +19,9 @@ const TaskForm = ({mode}: Props) =>{
     })
 
     useEffect(()=> {
-        setisLoading(true)
         setErrors(null)
         if (mode === 'edit'){
+            setisLoading(true)
             api.get(`/tasks/${taskId}/`)
                 .then(res=>setFormData({
                 title:res.data.title,
@@ -29,7 +29,6 @@ const TaskForm = ({mode}: Props) =>{
                 status:res.data.status,
                 priority:res.data.priority,
                 due_date:res.data.due_date}))
-                // .catch(err=>console.error(err))
                 .catch(err=>setErrors(`An error of ${err.message} occurred. Please try again.`))
                 .finally(()=>setisLoading(false))
                 }
@@ -42,8 +41,6 @@ const TaskForm = ({mode}: Props) =>{
     }
     const handleSubmit = async(e: React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault()
-        setisLoading(true)
-        setErrors(null)
         try {
             if(mode === 'create'){
                 await api.post(`/tasks/`, { ...formData, project: id })
@@ -60,11 +57,8 @@ const TaskForm = ({mode}: Props) =>{
             navigate(`/projects/${id}/tasks`)
         } catch (error) {
             const err = error as AxiosError
-            // console.error("ERROR IS =>", error)
             setErrors(`An error of ${err.message} occurred. Please try again.`)
-        } finally{
-            setisLoading(false)
-        }
+        } 
         setFormData({
             title:'',
             description:'',
