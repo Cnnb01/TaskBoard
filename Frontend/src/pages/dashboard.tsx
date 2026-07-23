@@ -20,7 +20,6 @@ const Dashboard = () => {
         } catch (error) {
             const err = error as AxiosError
             setErrors(`An error of ${err.message} occurred. Please try again.`)
-            // console.error("ERROR IS=>", error)
         } finally {
             setIsLoading(false)
         }
@@ -37,12 +36,10 @@ const Dashboard = () => {
         } catch (error) {
             const err = error as AxiosError
             setErrors(`An error of ${err.message} occurred. Please try again.`)
-            // console.error(error)
         }
     }
     
     if (isLoading) return <h1>Loading...</h1>
-    if (errors) return <h1>{errors}</h1>
     return (
         <div className="dashboard">
             <button onClick={()=> navigate("/create-project")}>Create Project</button>
@@ -52,8 +49,9 @@ const Dashboard = () => {
                     <h4>{project.description}</h4>
                     <h5>{project.created_at}</h5>
                     <button onClick={()=> navigate(`/projects/${project.id}/tasks`)}>View Project</button><br/>
-                    <button onClick={()=>navigate(`/projects/${project.id}/edit-project`)} >Edit Project</button>
-                    <button onClick={()=>deleteProject(project.id)}>Delete Project</button>
+                    <button onClick={()=>navigate(`/projects/${project.id}/edit-project`)} >Edit Project</button><br/>
+                    <button onClick={()=>deleteProject(project.id)}>Delete Project</button><br/>
+                    <button onClick={()=>navigate(`/projects/${project.id}/summary`)}>Summary</button>
                 </div>
             ))}
             </div>

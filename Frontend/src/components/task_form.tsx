@@ -69,7 +69,6 @@ const TaskForm = ({mode}: Props) =>{
     }
     
     if (isLoading) return <h1>Loading...</h1>
-    if (errors) return <h1>{errors}</h1>
 
     return(
         <div>
