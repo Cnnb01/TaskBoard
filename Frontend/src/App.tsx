@@ -4,6 +4,7 @@ import Dashboard from './pages/dashboard'
 import ProjectTasks from './pages/projectTasks'
 import ProjectForm from './components/project_form'
 import TaskForm from './components/task_form'
+import Summary from './pages/summary'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/projects/:id/create-task" element={<TaskForm mode='create'/>}/>
           <Route path="/projects/:id/edit-project" element={<ProjectForm mode="edit"/>}/>
           <Route path="/projects/:id/tasks/:taskId/edit-task" element={<TaskForm mode="edit"/>}/>
+          <Route path="/projects/:id/summary" element={<Summary/>} />
         </Routes>
         </BrowserRouter>
       </section>
