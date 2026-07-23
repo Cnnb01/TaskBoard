@@ -5,6 +5,7 @@ from rest_framework import status
 from .models import Project, Task
 from .serializers import TaskSerializer, ProjectSeriliazer
 from django.shortcuts import get_object_or_404
+from django.db.models import Count
 # Create your views here.
 
 @api_view(['GET','POST',])
@@ -83,4 +84,16 @@ def manage_tasks(request,pk):
         # task = Task.objects.get(pk=pk)
         task = get_object_or_404(Task, pk=pk)
         task.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)    
+
+@api_view(['GET'])
+def project_summary(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    # task = get_object_or_404(Task, pk=pk)
+    total_task_count =Task.objects.filter(project=pk).count()
+    status_counts = Task.objects.filter(project=pk).values('status').annotate(countt=Count('id'))
+    return Response({
+        "project":project.name,
+        "total_tasks": total_task_count,
+        "task_status": list(status_counts)
+    })
