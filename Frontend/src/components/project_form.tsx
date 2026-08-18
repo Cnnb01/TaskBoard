@@ -15,9 +15,9 @@ const ProjectForm = ({ mode }: Props) => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        setisLoading(true)
         setErrors(null)
         if (mode === 'edit') {
+            setisLoading(true)
             api.get(`/projects/${id}/`)
                 .then(res => setFormData({ name: res.data.name, description: res.data.description }))
                 // .catch(err => console.error(err))

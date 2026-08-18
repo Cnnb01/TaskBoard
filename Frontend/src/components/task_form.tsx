@@ -13,8 +13,8 @@ const TaskForm = ({mode}: Props) =>{
     const [formData, setFormData] = useState({
         title:'',
         description:'',
-        status:'',
-        priority:'',
+        status:'todo',
+        priority:'low',
         due_date: ''
     })
 
@@ -47,25 +47,11 @@ const TaskForm = ({mode}: Props) =>{
             }else{
                 await api.put(`/tasks/${taskId}/`, formData)
             }
-            setFormData({
-                title:'',
-                description:'',
-                status:'',
-                priority:'',
-                due_date:''
-            })
             navigate(`/projects/${id}/tasks`)
         } catch (error) {
             const err = error as AxiosError
             setErrors(`An error of ${err.message} occurred. Please try again.`)
-        } 
-        setFormData({
-            title:'',
-            description:'',
-            status:'',
-            priority:'',
-            due_date: ''
-        })
+        }
     }
     
     if (isLoading) return <h1>Loading...</h1>
