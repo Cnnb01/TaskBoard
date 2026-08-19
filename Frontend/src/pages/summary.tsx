@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../api/client";
 import { useParams } from "react-router-dom";
-import type { Project } from "../types";
 import { AxiosError } from "axios";
 
 const Summary = () => {
