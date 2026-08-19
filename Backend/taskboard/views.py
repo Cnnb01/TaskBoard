@@ -6,14 +6,18 @@ from .models import Project, Task
 from .serializers import TaskSerializer, ProjectSeriliazer
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
+from rest_framework.pagination import PageNumberPagination
 # Create your views here.
 
 @api_view(['GET','POST',])
 def project_list(request):
     if request.method == 'GET': 
         projects = Project.objects.all()
-        serializer = ProjectSeriliazer(projects, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        paginator = PageNumberPagination()
+        paginator.page_size = 5
+        result_page = paginator.paginate_queryset(projects, request)
+        serializer = ProjectSeriliazer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data) #wraps the data with count, next, previous, and results.
     elif request.method == 'POST':
         serializer = ProjectSeriliazer(data=request.data)
         if serializer.is_valid():
@@ -56,8 +60,11 @@ def tasks_list(request):
             tasks = tasks.filter(priority=priority)
         if project:
             tasks = tasks.filter(project=project)
-        serializer = TaskSerializer(tasks, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        paginator = PageNumberPagination()
+        paginator.page_size = 5
+        result_page = paginator.paginate_queryset(tasks, request)
+        serializer = TaskSerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
     elif request.method == 'POST':
         serializer = TaskSerializer(data=request.data)
         if serializer.is_valid():
