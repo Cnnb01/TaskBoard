@@ -9,21 +9,23 @@ const Dashboard = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [errors, setErrors] = useState<string | null>(null)
     const [projects, setProjects] = useState<Project[]>([])
+    const [nextUrl, setNextUrl] = useState<string | null>(null)
+    const [prevUrl, setPrevUrl] = useState<string | null>(null)
 
-    const fetchprojects = async() => {
+    const fetchprojects = async(url = `/projects/`) => {
         setIsLoading(true)
         setErrors(null)
         try {
-            const res = await api.get(`/projects/`)
-            console.log("DATA RETRIEVED IS=>",res.data)
-            setProjects(res.data)
+            const res = await api.get(url)
+            setProjects(res.data.results)
+            setNextUrl(res.data.next)
+            setPrevUrl(res.data.previous)
         } catch (error) {
             const err = error as AxiosError
             setErrors(`An error of ${err.message} occurred. Please try again.`)
         } finally {
             setIsLoading(false)
         }
-        
     }
         
     useEffect(()=>{
@@ -55,7 +57,8 @@ const Dashboard = () => {
                 </div>
             ))}
             </div>
-            
+            <button onClick={() => prevUrl && fetchprojects(prevUrl)} disabled={!prevUrl}>Previous</button>
+            <button onClick={() => nextUrl && fetchprojects(nextUrl)} disabled={!nextUrl}>Next</button>
         </div>
     )
 }
