@@ -12,14 +12,17 @@ const ProjectTasks = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [errors, setErrors] = useState<string | null>(null)
     const [status, setStatus] = useState<string>('all')
+    const [nextUrl, setNextUrl] = useState<string | null>(null)
+    const [prevUrl, setPrevUrl] = useState<string | null>(null)
 
-    const fetchTasks = async(id: string | undefined) => {
+    const fetchTasks = async(url?: string) => {
         setIsLoading(true)
         setErrors(null)
         try {
-            const res = await api.get(status === "all" ? `/tasks/?project=${id}` : `/tasks/?project=${id}&status=${status}`)
-            console.log("THE TASKS ARE =>", res.data)
-            setTasks(res.data)
+            const res = await api.get(url ?? (status === "all" ? `/tasks/?project=${id}` : `/tasks/?project=${id}&status=${status}`))
+            setTasks(res.data.results)
+            setNextUrl(res.data.next)
+            setPrevUrl(res.data.previous)
         } catch (error) {
             const err = error as AxiosError
             setErrors(`An error of ${err.message} occurred. Please try again.`)
@@ -28,7 +31,7 @@ const ProjectTasks = () => {
         }
     }
     useEffect(() => {
-        fetchTasks(id)
+        fetchTasks()
     }, [id,status])
 
     const deleteTask = (id: number) => async () => {
@@ -62,6 +65,8 @@ const ProjectTasks = () => {
                     <button onClick={deleteTask(task.id)}>Delete Task</button>
                 </div>
             ))}
+            <button onClick={() => prevUrl && fetchTasks(prevUrl)} disabled={!prevUrl}>Previous</button>
+            <button onClick={() => nextUrl && fetchTasks(nextUrl)} disabled={!nextUrl}>Next</button>
         </div>
     )
 }
