@@ -5,7 +5,7 @@ from django.utils import timezone
 
 # serializer.is_valid() returns True/False
 # {**self.valid_data, 'status': 'invalid'} creates a copy of valid data with just one field changed — cleaner than rewriting the whole dict each time
-
+# self.assertIn(member, container) is a built-in Python unittest method used to verify that a specific key, value, or substring exists within a given response or collection
 
 
 class ProjectSerializerTest(TestCase):
@@ -26,7 +26,9 @@ class ProjectSerializerTest(TestCase):
     def test_invalid_data(self):
         invalid_data = {'description': 'No name provided'}
         serializer = ProjectSeriliazer(data=invalid_data)
+        #self.assertFalse(expr, msg=None) to check that an expression or condition evaluates to False
         self.assertFalse(serializer.is_valid())
+        #serializer.errors is a property that holds a dictionary of validation error messages after you call serializer.is_valid()
         self.assertIn('name', serializer.errors)
 
 
