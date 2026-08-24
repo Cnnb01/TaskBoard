@@ -29,6 +29,7 @@ from taskboard.models import Project, Task
 class ProjectViewTest(APITestCase):
     def setUp(self):
         self.project = Project.objects.create(name="Test Project", description="This is a test project")
+
     def test_get_projects_returns_200(self):
         res = self.client.get('/api/v1/projects/')
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -72,3 +73,35 @@ class TaskViewTest(APITestCase):
             status='todo',
             priority='low'
         )
+
+    def test_get_tasks_returns_200(self):
+        res = self.client.get('/api/v1/tasks/')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_get_tasks_filters_by_status(self):
+        res = self.client.get('/api/v1/tasks/?status=todo')
+        self.assertEqual(len(res.data['results']), 1)
+
+    def test_get_tasks_filters_by_project(self):
+        res = self.client.get(f'/api/v1/tasks/?project={self.project.id}')
+        self.assertEqual(len(res.data['results']), 1)
+
+    def test_create_task_returns_201(self):
+        res = self.client.post('/api/v1/tasks/', {
+            'project': self.project.id,
+            'title': 'New Task',
+            'description': 'New Task Desc',
+            'due_date': timezone.now(),
+            'status': 'todo',
+            'priority': 'low'
+        })
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_get_nonexistent_task_returns_404(self):
+        res = self.client.get('/api/v1/tasks/999/')
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_delete_task_returns_204(self):
+        res = self.client.delete(f'/api/v1/tasks/{self.task.id}/')
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        
