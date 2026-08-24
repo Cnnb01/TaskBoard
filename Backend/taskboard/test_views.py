@@ -61,3 +61,14 @@ class ProjectViewTest(APITestCase):
         res = self.client.delete(f'/api/v1/projects/{self.project.id}/')
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
 
+class TaskViewTest(APITestCase):
+    def setUp(self):
+        self.project = Project.objects.create(name="Test Project")
+        self.task = Task.objects.create(
+            project=self.project,
+            title="Test Task",
+            description="This is a test task",
+            due_date=timezone.now(),
+            status='todo',
+            priority='low'
+        )
