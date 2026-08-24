@@ -31,7 +31,7 @@ def project_details(request, pk):
         # project = Project.objects.get(pk=pk)
         project = get_object_or_404(Project, pk=pk)
         serializer = ProjectSeriliazer(project)
-        print("the project returned is=>",serializer.data)
+        # print("the project returned is=>",serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'PUT' or request.method == 'PATCH':
         # project = Project.objects.get(pk=pk)
