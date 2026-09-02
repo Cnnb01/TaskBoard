@@ -12,9 +12,10 @@ from rest_framework.pagination import PageNumberPagination
 @api_view(['GET','POST',])
 def project_list(request):
     if request.method == 'GET': 
-        projects = Project.objects.all()
+        projects = Project.objects.all().order_by('-created_at')
         paginator = PageNumberPagination()
         paginator.page_size = 5
+        # ordering = ["-created_at"]
         result_page = paginator.paginate_queryset(projects, request)
         serializer = ProjectSeriliazer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data) #wraps the data with count, next, previous, and results.
@@ -50,7 +51,7 @@ def project_details(request, pk):
 @api_view(['GET', 'POST'])
 def tasks_list(request):
     if request.method == 'GET':
-        tasks = Task.objects.all()
+        tasks = Task.objects.all().order_by('-created_at')
         status_filter = request.query_params.get('status')
         priority = request.query_params.get('priority')
         project = request.query_params.get('project')
