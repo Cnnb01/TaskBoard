@@ -1,4 +1,3 @@
-import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Dashboard from './pages/dashboard'
 import ProjectTasks from './pages/projectTasks'
