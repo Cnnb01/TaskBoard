@@ -9,8 +9,10 @@ function App() {
   return (
     <>
       <section id="center">
-        <h1>WELCOME TO TASKBOARD</h1>
-        <h2>TRACK YOUR TASKS</h2>
+        <header className="px-6 py-6 border-b border-stone-200">
+          <h1 className="text-2xl font-bold tracking-tight text-stone-500">TaskBoard</h1>
+          <p className="text-stone-400 text-sm mt-0.5">Keep your work in order</p>
+        </header>
         <BrowserRouter>
         <Routes>
           <Route path="/" element={<Dashboard/>}/>
