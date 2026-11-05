@@ -52,17 +52,56 @@ const ProjectForm = ({ mode }: Props) => {
             setisLoading(false)
         }
     }
-    if (isLoading) return <h1>Loading...</h1>
-    
-    return(
-    <div>
-        <h1>{mode === 'create' ? 'Create Project' : 'Edit Project'}</h1>
-        <form onSubmit={handleSubmit}>
-            <input name="name" value={formData.name} onChange={handleChange}/>
-            <textarea name="description" value={formData.description} onChange={handleChange}/>
-            <button type="submit">{mode === 'create' ? 'Submit' : 'Edit'}</button>
-        </form>
-    </div>
+
+    if (isLoading) return (
+        <div className="flex items-center justify-center min-h-[60vh]">
+            <p className="text-stone-400 text-sm tracking-widest uppercase animate-pulse">Loading...</p>
+        </div>
+    )
+
+    const inputClass = "w-full bg-stone-50 dark:bg-[#1f2028] border border-stone-200 dark:border-[#2e303a] rounded-lg px-4 py-2.5 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-orange-400 dark:focus:border-orange-600 transition-colors"
+
+    return (
+        <div className="px-6 py-8 max-w-lg mx-auto">
+            {errors && (
+                <p className="mb-6 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">{errors}</p>
+            )}
+            <h2 className="text-stone-800 dark:text-stone-100 font-semibold text-lg mb-6">
+                {mode === 'create' ? 'New Project' : 'Edit Project'}
+            </h2>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <input
+                    name="name"
+                    placeholder="Project name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className={inputClass}
+                />
+                <textarea
+                    name="description"
+                    placeholder="Description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    rows={4}
+                    className={inputClass}
+                />
+                <div className="flex gap-3 mt-2">
+                    <button
+                        type="button"
+                        onClick={() => navigate("/")}
+                        className="flex-1 text-sm font-medium bg-stone-100 dark:bg-stone-700 hover:bg-stone-200 dark:hover:bg-stone-600 text-stone-600 dark:text-stone-300 px-4 py-2.5 rounded-lg transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        className="flex-1 text-sm font-medium bg-orange-700 hover:bg-orange-800 text-white px-4 py-2.5 rounded-lg transition-colors"
+                    >
+                        {mode === 'create' ? 'Create' : 'Save Changes'}
+                    </button>
+                </div>
+            </form>
+        </div>
     )
 }
 
