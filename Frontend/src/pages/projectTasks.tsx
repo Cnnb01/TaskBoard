@@ -105,6 +105,7 @@ const ProjectTasks = () => {
                     + New Task
                 </button>
             </div>
+            <h3>Project name: {tasks[0]?.project_name}</h3>                           
 
             {tasks.length === 0 ? (
                 <div className="text-center py-20 text-stone-400">

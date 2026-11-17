@@ -17,6 +17,7 @@ export interface Task {
     status: Status,
     priority:Priority, 
     project: number
+    project_name: string
 }
 
 export type Props = {
