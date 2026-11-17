@@ -24,6 +24,7 @@ const ProjectTasks = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [errors, setErrors] = useState<string | null>(null)
     const [status, setStatus] = useState<string>('all')
+    const [priority, setPriority] = useState<string>('all')
     const [nextUrl, setNextUrl] = useState<string | null>(null)
     const [prevUrl, setPrevUrl] = useState<string | null>(null)
 
@@ -31,7 +32,12 @@ const ProjectTasks = () => {
         setIsLoading(true)
         setErrors(null)
         try {
-            const res = await api.get(url ?? (status === "all" ? `/tasks/?project=${id}` : `/tasks/?project=${id}&status=${status}`))
+            
+            let defaultUrl = `/tasks/?project=${id}`
+            if (status !== "all") defaultUrl += `&status=${status}`
+            if (priority !== "all") defaultUrl += `&priority=${priority}`
+
+            const res = await api.get(url ?? defaultUrl)
             setTasks(res.data.results)
             setNextUrl(res.data.next)
             setPrevUrl(res.data.previous)
@@ -44,7 +50,7 @@ const ProjectTasks = () => {
     }
     useEffect(() => {
         fetchTasks()
-    }, [id,status])
+    }, [id,status,priority])
 
     const deleteTask = (id: number) => async () => {
         try {
@@ -69,6 +75,13 @@ const ProjectTasks = () => {
         { label: 'Done', value: 'done' },
     ]
 
+    const priorityBtns = [
+        {label: 'All', value: 'all'},
+        {label: 'Low', value: 'low'},
+        {label: 'Medium', value: 'medium'},
+        {label: 'High', value: 'high'},
+    ]
+
     return (
         <div className="px-6 py-8 max-w-5xl mx-auto">
             {errors && (
@@ -90,6 +103,20 @@ const ProjectTasks = () => {
                             onClick={() => setStatus(btn.value)}
                             className={`text-xs px-3 py-1.5 rounded-md font-medium transition-colors ${
                                 status === btn.value
+                                    ? 'bg-orange-700 text-white'
+                                    : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600'
+                            }`}
+                        >
+                            {btn.label}
+                        </button>
+                    ))}
+
+                    {priorityBtns.map(btn => (
+                        <button
+                            key={btn.value}
+                            onClick={() => setPriority(btn.value)}
+                            className={`text-xs px-3 py-1.5 rounded-md font-medium transition-colors ${
+                                priority === btn.value
                                     ? 'bg-orange-700 text-white'
                                     : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                             }`}
